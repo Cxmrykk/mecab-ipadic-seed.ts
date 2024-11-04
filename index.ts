@@ -1,5 +1,4 @@
 import { readFileSync, readdirSync } from 'fs';
-import { createInterface } from 'readline';
 
 class DictionaryReader {
   filename: string;
@@ -8,21 +7,15 @@ class DictionaryReader {
     this.filename = filename;
   }
 
-  read(callback: (line: string) => void): Promise<void> {
-    return new Promise<void>((resolve) => {
-      const fileContents = readFileSync(`./dict/${this.filename}`, 'utf8');
-      const rl = createInterface({
-        input: fileContents.split('\n')[Symbol.iterator]() as any, // Use type assertion here
-        crlfDelay: Infinity, // Important for handling Windows line endings correctly
-      });
-
-      rl.on('line', (line: string) => {
+  async read(callback: (line: string) => void): Promise<void> {
+    const fileContents = readFileSync(`${import.meta.dir}/dict/${this.filename}`, 'utf8');
+    const lines = fileContents.split('\n');
+    
+    for (const line of lines) {
+      if (line.trim()) { // Skip empty lines
         callback(line);
-      });
-      rl.on('close', () => {
-        resolve();
-      });
-    });
+      }
+    }
   }
 }
 
@@ -33,17 +26,10 @@ class SequentialDictionariesReader {
     this.readers = readers;
   }
 
-  read(callback: (line: string) => void): Promise<void> {
-    const promises: Promise<void>[] = this.readers.map((reader) => {
-      return reader.read(callback);
-    });
-
-    // Chain the promises sequentially
-    for (let i = 0; i < promises.length - 1; i++) {
-      promises[i].then(() => promises[i + 1]);
+  async read(callback: (line: string) => void): Promise<void> {
+    for (const reader of this.readers) {
+      await reader.read(callback);
     }
-
-    return promises[promises.length - 1];
   }
 }
 
@@ -58,7 +44,7 @@ export default class IPADic {
     this.characterDefinition = new DictionaryReader('char.def');
     this.unknownWordDefinition = new DictionaryReader('unk.def');
 
-    const readers: DictionaryReader[] = readdirSync('./dict').filter((filename: string) => {
+    const readers: DictionaryReader[] = readdirSync(`${import.meta.dir}/dict`).filter((filename: string) => {
       return /\.csv$/.test(filename);
     }).map((filename: string) => {
       return new DictionaryReader(filename);
