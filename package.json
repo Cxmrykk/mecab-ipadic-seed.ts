@@ -1,44 +1,11 @@
 {
-  "name": "mecab-ipadic-seed",
-  "description": "mecab-ipadic seed dictionary reader",
-  "version": "0.0.2",
-  "author": "Takuya Asano <takuya.a@gmail.com>",
-  "bugs": {
-    "url": "https://github.com/takuyaa/mecab-ipadic-seed/issues"
-  },
+  "name": "@cxmrykk/mecab-ipadic-seed.ts",
+  "module": "src/index.ts",
   "devDependencies": {
-    "babel-preset-es2015": "~6.9.0",
-    "decompress-tarxz": "~2.0.0",
-    "del": "~2.2.1",
-    "gulp": "gulpjs/gulp#4.0",
-    "gulp-babel": "~6.1.2",
-    "gulp-decompress": "~2.0.0",
-    "gulp-mocha": "~2.2.0"
+    "@types/bun": "latest"
   },
-  "files": [
-    "lib/",
-    "package.json",
-    "README.md",
-    "LICENSE.txt",
-    "NOTICE.md"
-  ],
-  "homepage": "https://github.com/takuyaa/mecab-ipadic-seed",
-  "keywords": [
-    "ipadic",
-    "mecab",
-    "nlp"
-  ],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/takuyaa/mecab-ipadic-seed.git"
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   },
-  "scripts": {
-    "build": "gulp build",
-    "clean": "gulp clean",
-    "test": "gulp test",
-    "preversion": "gulp test",
-    "watch": "gulp watch"
-  }
+  "type": "module"
 }
